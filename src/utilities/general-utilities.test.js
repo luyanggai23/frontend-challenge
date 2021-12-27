@@ -21,15 +21,15 @@ describe('swapCase', () => {
   })
 
   test('handles caps', () => {
-    const result = swapCase('A');
+    const result = swapCase('AAAAAAAA');
 
-    expect(result).toBe('a');
+    expect(result).toBe('aaaaaaaa');
   });
 
   test('handles lowercase', () => {
-    const result = swapCase('a');
+    const result = swapCase('aaaaaaaa');
 
-    expect(result).toBe('A');
+    expect(result).toBe('AAAAAAAA');
   });
 
   test('handles numbers', () => {
@@ -41,17 +41,26 @@ describe('swapCase', () => {
 
 describe('shuffle', () => {
   test('shuffles empty string correctly', () => {
-    const emptyArray = [];
-    const result = shuffle(emptyArray);
+    const emptyString = '';
+    const result = shuffle(emptyString);
 
     expect(result.length).toBe(0);
   });
 
   test('shuffles randomly generated long string correctly', () => {
-    const randomStringArray = makeRandomString(1000).split('');
-    const result = shuffle(randomStringArray);
-    expect(result.length).toBe(randomStringArray.length);
-    expect(result.join('')).not.toMatch(randomStringArray.join(''));
-    expect(result.sort().join('')).toMatch(randomStringArray.sort().join(''));
+    const randomString = makeRandomString(1000);
+    const result = shuffle(randomString);
+    expect(result.length).toBe(randomString.length);
+    expect(result).not.toMatch(randomString);
+
+    const sortString = (string) => {
+      const stringArray = string.split('');
+      stringArray.sort();
+      return stringArray.join('');
+    }
+
+    let sortedInput = sortString(randomString);
+    let sortedOutput = sortString(result);
+    expect(sortedInput).toMatch(sortedOutput);
   });
 });

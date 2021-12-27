@@ -9,13 +9,21 @@ export const makeRandomString = (length) => {
   return result;
 };
 
-export const swapCase = (letter) => {
-  return letter === letter.toUpperCase() ? letter.toLowerCase() : letter.toUpperCase()
+export const swapCase = (letters) => {
+  let newLetters = "";
+  for (let i = 0; i < letters.length; i++) {
+    if (letters[i] === letters[i].toLowerCase()) {
+      newLetters += letters[i].toUpperCase();
+    } else {
+      newLetters += letters[i].toLowerCase();
+    }
+  }
+  return newLetters;
 };
 
-export const shuffle = (arrayOfChars) => {
-  let a = [...arrayOfChars];
-  let n = arrayOfChars.length;
+export const shuffle = (string) => {
+  let a = string.split(""),
+    n = a.length;
 
   for (let i = n - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -23,6 +31,11 @@ export const shuffle = (arrayOfChars) => {
     a[i] = a[j];
     a[j] = tmp;
   }
-
-  return a; 
+  return a.join("");
 };
+
+export const createRandomArray = (length) => {
+  return new Array(parseInt(length, 10))
+        .fill(null)
+        .map(() => makeRandomString(5));
+}

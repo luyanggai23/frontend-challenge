@@ -1,10 +1,10 @@
 import { shuffle, swapCase, makeRandomString } from './../utilities/general-utilities';
 
 export const ARRAY_CHANGING_FUNCTIONS = {
-  "Scramble each element": { fn: shuffle },
+  "Scramble each element": { fn: shuffle, method: "map" },
   "Swap case of each element": { fn: swapCase, method: "map" },
   "Add random character to each element": {
-    fn: (x) => [x, makeRandomString(1)],
+    fn: (x) => `${x}${makeRandomString(1)}`,
     method: "map",
     callFlatAtEnd: true
   },

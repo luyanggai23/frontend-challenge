@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { makeRandomString, shuffle } from './../../utilities/general-utilities';
+import { createRandomArray } from './../../utilities/general-utilities';
 import TransformationUpdater from './../TransformationUpdater/TransformationUpdater';
 import { ARRAY_CHANGING_FUNCTIONS } from './../../constants/transformation-constants';
 import StyledButton from './../Button/StyledButton';
@@ -23,30 +23,37 @@ export default function PointlessApp() {
     if (loading) {
       let start = performance.now();
 
-      let newArr = randomArray;
-      changes.forEach((change, i) => {
-        const { method, fn, callFlatAtEnd } = ARRAY_CHANGING_FUNCTIONS[change];
-        // easiest way to leverage shuffle function is to pass whole array instead of using something like map to step through each element
-        if (!method) {
-          newArr = shuffle(newArr);
-        } else {
-          newArr = newArr[method](fn);
-          if (callFlatAtEnd) {
-            newArr = newArr.flat();
+      //use reduce to avoid multiple iterations through array
+      const outputArray = randomArray.reduce((previousValue, currentValue) => {
+        let keepElement = true;
+        changes.forEach((change, i) => {
+          const { method, fn } = ARRAY_CHANGING_FUNCTIONS[change];
+          if (method === 'map') {
+            const mappedValue = fn(currentValue);
+            currentValue = mappedValue;
+          } else if (method === 'filter') {
+            if (!fn(currentValue)) {
+              keepElement = false;
+            }
           }
+        });
+
+        if (keepElement) {
+          previousValue.push(currentValue);
         }
-      });
+
+        return previousValue;
+      }, []);
 
       let end = performance.now();
       const runtime = end-start;
       setRuntime(runtime);
-      setOutputArray(newArr);
+      setOutputArray(outputArray);
     }
   }, [loading, changes, randomArray]);
 
   const onGenerateRandomArrayButtonClick = () => {
-    const generatedArray = makeRandomString(parseInt(arrayLength)).split('');
-    setRandomArray(generatedArray);
+    setRandomArray(createRandomArray(arrayLength));
   }
 
   const onInputChange = (e) => {
